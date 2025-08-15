@@ -15,7 +15,7 @@ function App() {
       {authState ? (
         <MainPage />
       ) : (
-        <AuthPage authSuccess={handleAuthSuccess} />
+        <AuthPage handleAuthSuccess={handleAuthSuccess} />
       )}
     </div>
   );

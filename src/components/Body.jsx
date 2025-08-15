@@ -1,77 +1,86 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Body = ({ dataset, algorithm, runState, toggleRunState }) => {
-  // State for the tabs. An empty array initially.
+const Body = ({ dataset, algorithm, runState, setRunState, setAlertMessage }) => {
   const [labels, setLabels] = useState([]); 
-  // State to store images, with labels as keys.
   const [images, setImages] = useState({}); 
-  // State to manage which tab is currently active.
   const [activeTab, setActiveTab] = useState(null); 
-  const [message, setMessage] = useState('Click "Start" to begin image generation.');
   const ws = useRef(null);
 
   useEffect(() => {
     if (runState) {
-      ws.current = new WebSocket('ws://localhost:8889/ws');
+      ws.current = new WebSocket("ws://localhost:8889/ws");
 
       ws.current.onopen = () => {
         ws.current.send({
-          "message_type": "start",
+          "type": "data",
           "data": {
             "dataset": dataset,
             "algorithm": algorithm,
           }
         })
-        setMessage('WebSocket connection established. Waiting for data...');
       };
 
       ws.current.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        
-        // Check if the message is valid
-        if (
-          typeof data !== 'object' || data === null ||
-          !('message_type' in data) || !('data' in data)
-        ) {
-          console.error('Error: cannot parse the data.');
-          setMessage('Connection error. Please try again.');
-        } else {
-          if (data.message_type == 'labels') {
-            setLabels(data.data);
-            if (data.data.length > 0) {
-              setActiveTab(data.data[0]);
-            }
-            setMessage('Labels received. Images will start streaming shortly.');
-          } else if (data.message_type == 'image') {
-            setImages(prevImages => ({
-              ...prevImages,
-              [data.data.label]: `data:image/jpeg;base64,${data.data.image}`
-            }));
-            setMessage('Generating images...');
+        try {
+          const data = JSON.parse(event.data);
+          if data.type === "data" {
+            if "labels" in data.data {
+              setLabels(data.data.labels);
+              setActiveTab(labels[0]);
+              ws.current.send({
+                "type": "action",
+                "data": "start"
+              });
+            } else if "image" in data.data {
+              if labels.length === 0 {
+                console.error("Receive images before labels.");
+                setAlertMessage("Error: Receive images before labels.");
+                ws.current.close();
+              } else {
+                setImages(prev => ({
+                  ...prev,
+                  [data.data.image.label]: `data:image/jpeg;base64,${data.data.image.content}`
+                }));
+              };
+            } else {
+              console.error("Unknown data type.");
+              setAlertMessage("Error: Unknown data type.");
+              ws.current.close();
+            };
+          } else if data.type === "action" {
+            if data.data === "completion" {
+              setAlertMessage("The program completed successfully.");
+              ws.current.close();
+            } else {
+              console.error("Unknown action type.");
+              setAlertMessage("Error: Unknown action type.");
+              ws.current.close();
+            };
           } else {
-            ws.current.send({
-              "message_type": "start",
-              "data": {
-                "dataset": dataset,
-                "algorithm": algorithm,
-              }
-            })
-            setMessage('WebSocket connection established. Waiting for data...');
+            console.error("Unknown message type.");
+            setAlertMessage("Error: Unknown message type.");
+            ws.current.close();
           };
+        } catch (err) {
+          console.error("Unknown format, cannot parse it.");
+          setAlertMessage("Error: Cannot parse the message.");
+          ws.current.close();
         };
       };
 
       ws.current.onerror = (error) => {
-        console.error('WebSocket Error:', error);
-        setMessage('Connection error. Please try again.');
+        console.error("WebSocket Error:", error);
+        setAlertMessage("Error: WebSocket connection failed. Please try again.");
       };
 
       ws.current.onclose = () => {
-        console.log('WebSocket connection closed.');
-        setMessage('Generation stopped.');
+        setRunState(false);
       };
 
-      toggleRunState();
+    } else {
+      if (ws.current) {
+        ws.current.close();
+      }
     };
 
     return () => {
@@ -82,44 +91,37 @@ const Body = ({ dataset, algorithm, runState, toggleRunState }) => {
   }, [runState]);
 
   return (
-    <div style={{ flexGrow: 1, padding: '20px', textAlign: 'center' }}>
-      {/* Tab headers */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        {labels.length > 0 ? (
-          labels.map(label => (
-            <button
-              key={label}
-              onClick={() => setActiveTab(label)}
-              style={{
-                padding: '10px 20px',
-                margin: '0 5px',
-                cursor: 'pointer',
-                backgroundColor: activeTab === label ? '#007bff' : '#f0f0f0',
-                color: activeTab === label ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '5px'
-              }}
-            >
-              {label}
-            </button>
-          ))
-        ) : (
-          <p>{message}</p>
-        )}
-      </div>
+    <div className="body-container">
+      {(labels.length > 0) ? (
+        <div>
+          <div className="label-container">
+            {labels.map((label) => {
+              (activeTab === label) ? (
+                <button className="label-button-active" key={label} onClick={() => setActiveTab(label)}>{label}</button>
+              ) : (
+                <button className="label-button" key={label} onClick={() => setActiveTab(label)}>{label}</button>
+              )
+            })}
+          </div>
 
-      {/* Image display area */}
-      <div style={{ border: '1px solid #ccc', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {activeTab && images[activeTab] ? (
-          <img
-            src={images[activeTab]}
-            alt={`Generated content for label: ${activeTab}`}
-            style={{ maxWidth: '100%', maxHeight: '300px' }}
-          />
-        ) : (
-          <p>{!labels.length ? message : `Waiting for image for label: ${activeTab}`}</p>
-        )}
-      </div>
+          <div className="image-container">
+            {activeTab && images[activeTab] ? (
+              <img
+                src={images[activeTab]}
+                alt={`Performance monitor for ${activeTab}`}
+                style={{ maxWidth: '100%', maxHeight: '300px' }}
+              />
+            ) : (
+              <p>{`Waiting for image for ${activeTab} from server...`}</p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h4>Welcome to use MultStreamLab.</h4>
+          <p>Select dataset and algorithm and click the "Run" button.</p>
+        </div>
+      )}
     </div>
   );
 };

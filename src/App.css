@@ -40,34 +40,21 @@
 
 /* customized styling */
 
+select {
+  margin: 0 10px 0 10px;
+}
+
 .main-page-container {
   width: 100vw;
-  height: 100vh;       /* Ensures the container fills the viewport height */
+  height: 100vh;
   background-color: #f0f2f5;
 }
 
 .header-container {
-  padding: 0;
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.auth-container {
-  display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center;     /* Centers vertically */
-  width: 100vw;
-  height: 100vh;       /* Ensures the container fills the viewport height */
-  background-color: #f0f2f5;
-}
-
-.auth-form-container {
-  padding: 40px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .panel-container {
@@ -77,8 +64,18 @@
 }
 
 .button-container {
-  margin-left: 20px;
-  margin-right: 20px;
+  margin: 0 20px 0 20px;
+}
+
+.info-button {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #00a0ff;
+  color: #ffffff;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7.5px;
 }
 
 .info-modal-outer-container {
@@ -94,12 +91,58 @@
 }
 
 .info-modal-inner-container {
+  width: 80vw;
+  height: 80vh;
   background: #fff;
   padding: 20px;
   border-radius: 5px;
 }
 
-label select {
-  margin-left: 10px;
-  margin-right: 10px;
+.info-modal-content {
+  height: 67vh;
+}
+
+.body-container {
+}
+
+.label-container {
+  display: flex;
+  justify-content: start;
+  margin-bottom: 20px;
+}
+
+.label-button {
+  padding: 0 10px 0 10px;
+  cursor: pointer;
+  color: #f0f0f0;
+  border-radius: 0 5px;
+}
+
+.label-button-active {
+  padding: 0 10px 0 10px;
+  cursor: pointer;
+  color: #007bff;
+  border-radius: 0 5px;
+}
+
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.auth-form-container {
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

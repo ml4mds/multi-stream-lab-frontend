@@ -1,24 +1,35 @@
 import React from 'react';
 
-export const datasetModal = ({ dataset, setDatasetModalOpen }) => {
+export const AlertModal = ({ alertMessage, setAlertMessage }) => {
   return (
     <div className="info-modal-outer-container">
       <div className="info-modal-inner-container">
-        <h4>Dataset Information</h4>
-        <p>You have selected: {dataset || 'Nothing'}</p>
-        <button onClick={() => setDatasetModalOpen(false)}>x</button>
+        <p>{alertMessage}</p>
+        <button onClick={() => setAlertMessage(null)}>Close</button>
       </div>
     </div>
   );
 };
 
-export const algorithmModal = ({ algorithm, setAlgorithmModalOpen }) => {
+export const DatasetModal = ({ dataset, description, setDatasetModalOpen }) => {
   return (
     <div className="info-modal-outer-container">
       <div className="info-modal-inner-container">
-        <h4>Algorithm Information</h4>
-        <p>You have selected: {algorithm || 'Nothing'}</p>
-        <button onClick={() => setAlgorithmModalOpen(false)}>x</button>
+        <h4>{dataset}</h4>
+        <div className="info-modal-content">{description || "No information available."}</div>
+        <button onClick={() => setDatasetModalOpen(false)}>Close</button>
+      </div>
+    </div>
+  );
+};
+
+export const AlgorithmModal = ({ algorithm, description, setAlgorithmModalOpen }) => {
+  return (
+    <div className="info-modal-outer-container">
+      <div className="info-modal-inner-container">
+        <h4>{algorithm}</h4>
+        <div className="info-modal-content">{description || "No information available."}</div>
+        <button onClick={() => setAlgorithmModalOpen(false)}>Close</button>
       </div>
     </div>
   );

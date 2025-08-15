@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const AuthPage = ({ authSuccess }) => {
-  const [token, setToken] = useState('');
+const AuthPage = ({ handleAuthSuccess }) => {
+  const [token, setToken] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -9,7 +9,7 @@ const AuthPage = ({ authSuccess }) => {
     // TODO: auth function
     // In a real application, you'd send this data to your backend
     // for authentication. Let's simulate a successful login for now.
-    console.log('Attempting authorize with:', { token });
+    console.log("Attempting authorize with:", { token });
 
     try {
       // Simulate an API call
@@ -27,10 +27,10 @@ const AuthPage = ({ authSuccess }) => {
       // console.log('Login successful', data);
       
       // Call the success callback
-      authSuccess();
+      handleAuthSuccess();
 
     } catch (error) {
-      console.error('Authorization error:', error);
+      console.error("Authorization error:", error);
       // You'd handle displaying an error message to the user here
     }
   };
@@ -39,7 +39,7 @@ const AuthPage = ({ authSuccess }) => {
     <div className="auth-container">
       <div className="auth-form-container">
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: "20px" }}>
             <label htmlFor="token">Token: </label>
             <input
               type="token"
