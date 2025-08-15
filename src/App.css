@@ -1,7 +1,4 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -39,4 +36,70 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* customized styling */
+
+.main-page-container {
+  width: 100vw;
+  height: 100vh;       /* Ensures the container fills the viewport height */
+  background-color: #f0f2f5;
+}
+
+.header-container {
+  padding: 0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  width: 100vw;
+  height: 100vh;       /* Ensures the container fills the viewport height */
+  background-color: #f0f2f5;
+}
+
+.auth-form-container {
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panel-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.info-modal-outer-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-modal-inner-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+label select {
+  margin-left: 10px;
+  margin-right: 10px;
 }
