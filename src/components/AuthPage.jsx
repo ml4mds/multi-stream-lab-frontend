@@ -39,15 +39,13 @@ const AuthPage = ({ handleAuthSuccess }) => {
     <div className="auth-container">
       <div className="auth-form-container">
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "20px" }}>
-            <label htmlFor="token">Token: </label>
-            <input
-              type="token"
-              id="token"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-            />
-          </div>
+          <label htmlFor="token">Token:</label>
+          <input
+            type="token"
+            id="token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+          />
           <button type="submit">Start</button>
         </form>
       </div>

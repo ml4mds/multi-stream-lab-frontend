@@ -11,40 +11,39 @@ const Header = ({
   toggleRunState,
   setAlertMessage,
 }) => {
-  const [datasets, setDatasets] = useState([]);
-  const [datasetInfo, setDatasetInfo] = useState("");
+  const [datasets, setDatasets] = useState({});
   const [datasetModalOpen, setDatasetModalOpen] = useState(false);
-  const [algorithms, setAlgorithms] = useState([]);
-  const [algorithmInfo, setAlgorithmInfo] = useState("");
+  const [algorithms, setAlgorithms] = useState({});
   const [algorithmModalOpen, setAlgorithmModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchDropdownData = async () => {
+    const fetchOptions = async () => {
       try {
-        const [datasetsResponse, algorithmsResponse] = await Promise.all([
-          axios.get("/api/datasets"),
-          axios.get("/api/algorithms")
-        ]);
+        const response = await axios.get("/api/options");
         
-        setDatasets(datasetsResponse.data.data);
-        setAlgorithms(algorithmsResponse.data.data);
+        setDatasets(response.data.data.datasets);
+        setAlgorithms(response.data.data.algorithms);
       } catch (err) {
-        setAlertMessage("Failed to fetch available datasets and algorithms.");
+        setAlertMessage("Error: Failed to fetch available datasets and algorithms.");
         console.error("Failed to fetch available datasets and algorithms.", err);
       }
     };
 
-    fetchDropdownData();
+    fetchOptions();
   }, []);
 
   useEffect(() => {
-    setDataset(Object.keys(datasets)[0]);
-    setDatasetInfo(Object.values(datasets)[0]);
+    const datasetsArray = Object.keys(datasets);
+    if (datasetsArray.length > 0) {
+      setDataset(datasetsArray[0]);
+    }
   }, [datasets]);
 
   useEffect(() => {
-    setAlgorithm(Object.keys(algorithms)[0]);
-    setAlgorithmInfo(Object.values(algorithms)[0]);
+    const algorithmArray = Object.keys(algorithms);
+    if (algorithmArray.length > 0) {
+      setAlgorithm(algorithmArray[0]);
+    }
   }, [algorithms]);
 
   return (
@@ -55,11 +54,10 @@ const Header = ({
           <label>
             Dataset:
             <select value={dataset} onChange={(e) => {
-              setDataset(e.target.key);
-              setDatasetInfo(e.target.value);
+              setDataset(e.target.value);
             }}>
-              {Object.entries(datasets).map(([key, value]) => (
-                <option key={key} value={value}>{key}</option>
+              {Object.keys(datasets).map((key) => (
+                <option key={key} value={key}>{key}</option>
               ))}
             </select>
           </label>
@@ -69,11 +67,10 @@ const Header = ({
           <label>
             Algorithm:
             <select value={algorithm} onChange={(e) => {
-              setAlgorithm(e.target.key);
-              setAlgorithmInfo(e.target.value);
+              setAlgorithm(e.target.value);
             }}>
-              {Object.entries(algorithms).map(([key, value]) => (
-                <option key={key} value={value}>{key}</option>
+              {Object.keys(algorithms).map((key) => (
+                <option key={key} value={key}>{key}</option>
               ))}
             </select>
           </label>
@@ -85,11 +82,11 @@ const Header = ({
       </div>
 
       {datasetModalOpen && (
-        <DatasetModal dataset={dataset} description={datasetInfo} setDatasetModalOpen={setDatasetModalOpen} />
+        <DatasetModal dataset={dataset} description={datasets[dataset]} setDatasetModalOpen={setDatasetModalOpen} />
       )}
 
       {algorithmModalOpen && (
-        <AlgorithmModal algorithm={algorithm} description={algorithmInfo} setAlgorithmModalOpen={setAlgorithmModalOpen} />
+        <AlgorithmModal algorithm={algorithm} description={algorithms[algorithm]} setAlgorithmModalOpen={setAlgorithmModalOpen} />
       )}
     </div>
   );

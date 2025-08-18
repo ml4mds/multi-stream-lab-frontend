@@ -11,7 +11,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div id="application">
       {authState ? (
         <MainPage />
       ) : (

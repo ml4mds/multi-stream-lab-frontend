@@ -4,7 +4,9 @@ export const AlertModal = ({ alertMessage, setAlertMessage }) => {
   return (
     <div className="info-modal-outer-container">
       <div className="info-modal-inner-container">
-        <p>{alertMessage}</p>
+        <div
+          className={alertMessage.startsWith("Error") ? "info-modal-alert-content" : "info-modal-content"}
+        >{alertMessage}</div>
         <button onClick={() => setAlertMessage(null)}>Close</button>
       </div>
     </div>
