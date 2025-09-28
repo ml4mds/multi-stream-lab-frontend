@@ -8,7 +8,7 @@ const Body = ({ dataset, algorithm, runState, setRunState, setAlertMessage }) =>
 
   useEffect(() => {
     if (runState) {
-      ws.current = new WebSocket(`ws://${window.location.host}/ws`);
+      ws.current = new WebSocket(`wss://${window.location.host}/ws`);
 
       ws.current.onopen = () => {
         const message = {
